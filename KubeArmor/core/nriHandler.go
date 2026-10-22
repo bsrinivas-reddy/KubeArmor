@@ -291,7 +291,7 @@ func (nh *NRIHandler) nriToKubeArmorContainer(nriContainer *api.Container) tp.Co
 	if nh.dm.K8sEnabled {
 		pod, err := K8s.K8sClient.CoreV1().Pods(podNamespace).Get(context.TODO(), podName, metav1.GetOptions{})
 		if err != nil {
-			kg.Warnf("failed to fetch Pod: %w\n", err)
+			kg.Warnf("failed to fetch Pod: %v", err)
 		}
 
 		if appArmorProfile, ok := pod.Annotations["container.apparmor.security.beta.kubernetes.io/"+nriContainer.Name]; ok {

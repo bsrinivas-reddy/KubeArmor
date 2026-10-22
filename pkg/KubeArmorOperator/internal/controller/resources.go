@@ -729,7 +729,7 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromGKE(providerHostname, 
 	url := providerHostname + providerEndpoint
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		clusterWatcher.Log.Warnf("failed to create request: %w, check provider host name and endpoint", err)
+		clusterWatcher.Log.Warnf("failed to create request: %v, check provider host name and endpoint", err)
 		return "", err
 	}
 
@@ -740,7 +740,7 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromGKE(providerHostname, 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		clusterWatcher.Log.Warnf("error making request: %w, check provider host name and endpoint", err)
+		clusterWatcher.Log.Warnf("error making request: %v, check provider host name and endpoint", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -754,7 +754,7 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromGKE(providerHostname, 
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		clusterWatcher.Log.Warnf("error reading response body: %w", err)
+		clusterWatcher.Log.Warnf("error reading response body: %v", err)
 		return "", err
 	}
 
@@ -766,14 +766,14 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromAWS(providerHostname, 
 	client := &http.Client{Timeout: 2 * time.Second}
 	req, err := http.NewRequest("PUT", providerHostname+"/latest/api/token", nil)
 	if err != nil {
-		clusterWatcher.Log.Warnf("failed to create request for fetching token: %w, check provider host name", err)
+		clusterWatcher.Log.Warnf("failed to create request for fetching token: %v, check provider host name", err)
 		return "", err
 	}
 	req.Header.Set("X-aws-ec2-metadata-token-ttl-seconds", "21600")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		clusterWatcher.Log.Warnf("error making request: %w", err)
+		clusterWatcher.Log.Warnf("error making request: %v", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -781,7 +781,7 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromAWS(providerHostname, 
 	if resp.StatusCode == http.StatusOK {
 		token, err = io.ReadAll(resp.Body)
 		if err != nil {
-			clusterWatcher.Log.Warnf("failed to read token: %d", err)
+			clusterWatcher.Log.Warnf("failed to read token: %v", err)
 			return "", err
 		}
 	}
@@ -791,14 +791,14 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromAWS(providerHostname, 
 	req, err = http.NewRequest("GET", url, nil)
 	client = &http.Client{Timeout: 2 * time.Second}
 	if err != nil {
-		clusterWatcher.Log.Warnf("failed to create request for fetching metadata: %w, check provider host name and endpoint", err)
+		clusterWatcher.Log.Warnf("failed to create request for fetching metadata: %v, check provider host name and endpoint", err)
 		return "", err
 	}
 	req.Header.Set("X-aws-ec2-metadata-token", string(token))
 
 	resp, err = client.Do(req)
 	if err != nil {
-		clusterWatcher.Log.Warnf("error making request: %w", err)
+		clusterWatcher.Log.Warnf("error making request: %v", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -810,7 +810,7 @@ func (clusterWatcher *ClusterWatcher) fetchClusterNameFromAWS(providerHostname, 
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		clusterWatcher.Log.Warnf("failed to read metadata: %d", err)
+		clusterWatcher.Log.Warnf("failed to read metadata: %v", err)
 		return "", err
 	}
 
